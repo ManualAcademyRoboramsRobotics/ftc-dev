@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
@@ -16,17 +18,21 @@ public class LinearSlideOpmode extends OpMode {
 
     public DcMotor SlideMotor;
 
+    public ElapsedTime timer;
+
     /*
      * Code to run ONCE when the driver hits INIT
      */
     @Override
     public void init() {
+        timer = new ElapsedTime();
         SlideMotor = hardwareMap.get(DcMotor.class, "ls");
+        SlideMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         SlideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        SlideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         SlideMotor.setTargetPosition(0);
-        telemetry.addData("", "Motor initialized");
+        SlideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        telemetry.addData("Initialization", "Motor initialized");
     }
 
     /*
@@ -34,6 +40,7 @@ public class LinearSlideOpmode extends OpMode {
      */
     @Override
     public void init_loop() {
+        telemetry.addData("Initialized", timer.time());
     }
 
     /*
@@ -48,15 +55,24 @@ public class LinearSlideOpmode extends OpMode {
      */
     @Override
     public void loop() {
-        for (int i = 0; i < 10; i++)
-        {
-            SlideMotor.setTargetPosition(i);
-            while(SlideMotor.isBusy());
-        }
+        telemetry.addData("Initialized", timer.time());
+        telemetry.addData("CurrentTicks", SlideMotor.getCurrentPosition());
+        telemetry.addData("RequestedTicks", SlideMotor.getTargetPosition());
+        telemetry.addData("Power", SlideMotor.getPower());
+        telemetry.addData("RequestedDistance", Constants.DISTANCE);
+        SlideMotor.setTargetPosition(distanceToTicks(Constants.DISTANCE));
+
+
+//        for (int i = 0; i < 10; i++)
+//        {
+//            telemetry.addData("Distance", i);
+//            SlideMotor.setTargetPosition(distanceToTicks(i));
+//            while(SlideMotor.isBusy());
+//        }
     }
 
-    public long distanceToTicks(double distanceIN)
+    public int distanceToTicks(double distanceIN)
     {
-        return Math.round((distanceIN/GEAR_CIRC_IN) * ENCODER_TICKS);
+        return (int) Math.round((distanceIN/GEAR_CIRC_IN) * ENCODER_TICKS);
     }
 }
