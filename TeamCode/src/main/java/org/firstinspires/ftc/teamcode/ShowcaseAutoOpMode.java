@@ -42,7 +42,7 @@ public class ShowcaseAutoOpMode extends LinearOpMode {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotorEx backLeftDrive = null;
-    private DcMotorEx backRightDrive = null;gd
+    private DcMotorEx backRightDrive = null;
     private DcMotorEx frontLeftDrive = null;
     private DcMotorEx frontRightDrive = null;
     private MecanumDrive drive = null;
